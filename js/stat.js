@@ -63,4 +63,6 @@ window.renderStatistics = function(ctx, names, times) {
         ctx.fillText(arrayTimes[i].toFixed(0), getX, getY - GAP);
       }
     }
-  };
+  }
+  drawHistogram(arrayTimes, arrayNames);
+};
