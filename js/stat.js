@@ -6,10 +6,10 @@ var CLOUD_X = 100;
 var CLOUD_Y = 10;
 var GAP = 10; //смещение
 var FONT_GAP = 16; //высота шрифта
-var margin = 20; //отступы
+var MARGIN = 20; //отступы
 var BAR_HEIGHT = 150; //высота гистограммы
 var BAR_WIDTH = 40; // ширина колонки
-var indent = 90; // отступ между колонками
+var INDENT = 90; // отступ между колонками
 
 var renderCloud = function(ctx, x, y, color) {
   ctx.fillStyle = color;
@@ -28,41 +28,56 @@ var getMaxElement = function(arr) {
   return maxElement;
 };
 
-
 window.renderStatistics = function(ctx, names, times) {
   renderCloud(ctx, CLOUD_X + GAP, CLOUD_Y + GAP, 'rgba(0, 0, 0, 0.7)');
   renderCloud(ctx, CLOUD_X, CLOUD_Y, '#fff');
 
   ctx.fillStyle = '#000';
   ctx.font = "16pt PT Mono";
-  ctx.fillText("Ура вы победили!", CLOUD_X + margin, CLOUD_Y + margin + GAP);
-  ctx.fillText("Список результатов: ", CLOUD_X + margin, CLOUD_Y + FONT_GAP + GAP + margin);
+  ctx.fillText("Ура вы победили!", CLOUD_X + MARGIN, CLOUD_Y + MARGIN + GAP);
+  ctx.fillText("Список результатов: ", CLOUD_X + MARGIN, CLOUD_Y + FONT_GAP + GAP + MARGIN);
 
-  var maxTime = getMaxElement(times);
-
-  for (var i = 0; i < names.length; i++) {
-    ctx.fillText(CLOUD_X + GAP + FONT_GAP + (GAP + BAR_HEIGHT) * i, CLOUD_Y + GAP);
-    ctx.fillRect(CLOUD_X + GAP + (GAP + BAR_HEIGHT) * i, CLOUD_Y + GAP, (barWidth * times[i]) / maxTime, BAR_WIDTH);
-  };
-
+  //Рисуем гистограмму
   function drawHistogram(arrayTimes, arrayNames) {
 
-    var step = BAR_HEIGHT / (getMaxValue(times) - 0);
-    var startX = CLOUD_X + margin;
-    var startY = CLOUD_Y + BAR_HEIGHT + margin + GAP + indent ;
+    var step = BAR_HEIGHT / (getMaxValue(times) - 0); 
+    var startX = CLOUD_X + 2 * MARGIN;
+    var startY = CLOUD_Y + BAR_HEIGHT + MARGIN * 3 + GAP * 2;
 
     for (var i = 0; i < arrayTimes.length; i++) {
         var barHeight = arrayTimes[i] * step;
-        var getY = startY - arrayTimes[i] * step;
-        var getX = startX + indent * i;
+        var newY = startY - arrayTimes[i] * step;
+        var newX = startX + INDENT * i;
 
         ctx.fillStyle = fillBarColor(names[i]);
-        ctx.fillRect(getX, getY, BAR_WIDTH, barHeight);
+        ctx.fillRect(newX, newY, BAR_WIDTH, barHeight);
 
-        ctx.fillText(arrayNames[i], getX, startY + margin);
-        ctx.fillText(arrayTimes[i].toFixed(0), getX, getY - GAP);
+        ctx.fillText(arrayNames[i], newX, startY + MARGIN);
+        ctx.fillText(arrayTimes[i].toFixed(0), newX, newY - GAP);
       }
     }
+  drawHistogram(times, names);
+
+  // Вспомогательные функции
+  // Ищем наихудший результат
+  function getMaxValue(array) {
+    var max = -1;
+    for (var i = 0; i < array.length; i++) {
+      var value = array[i];
+      if (value > max) {
+        max = value;
+      }
+    }
+    return max;
   }
-  drawHistogram(arrayTimes, arrayNames);
+
+  // Вычисляем цвет в зависимости от имени игрока
+  function fillBarColor(namePlayer) {
+    var randomOpacity = Math.random().toFixed(2);
+    if (namePlayer === 'Вы') {
+      ctx.fillStyle = 'rgba(255, 0, 0, 1)';
+    } else {
+      ctx.fillStyle = 'rgba(0, 0, 255, ' + randomOpacity + ')';
+    }
+  }
 };
