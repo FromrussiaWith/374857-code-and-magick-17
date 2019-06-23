@@ -16,18 +16,6 @@ var renderCloud = function(ctx, x, y, color) {
   ctx.fillRect(x, y, CLOUD_WIDTH, CLOUD_HEIGHT);
 };
 
-var getMaxElement = function(arr) {
-  var maxElement = arr[0];
-
-  for (var i = 0; i < arr.length; i++) {
-    if (arr[i] > maxElement) {
-      maxElement = arr[i];
-    }
-  }
-
-  return maxElement;
-};
-
 window.renderStatistics = function(ctx, names, times) {
   renderCloud(ctx, CLOUD_X + GAP, CLOUD_Y + GAP, 'rgba(0, 0, 0, 0.7)');
   renderCloud(ctx, CLOUD_X, CLOUD_Y, '#fff');
@@ -40,7 +28,7 @@ window.renderStatistics = function(ctx, names, times) {
   //Рисуем гистограмму
   function drawHistogram(arrayTimes, arrayNames) {
 
-    var step = BAR_HEIGHT / (getMaxValue(times) - 0); 
+    var step = BAR_HEIGHT / (getMaxValue(times) - 0);
     var startX = CLOUD_X + 2 * MARGIN;
     var startY = CLOUD_Y + BAR_HEIGHT + MARGIN * 3 + GAP * 2;
 
@@ -52,6 +40,7 @@ window.renderStatistics = function(ctx, names, times) {
         ctx.fillStyle = fillBarColor(names[i]);
         ctx.fillRect(newX, newY, BAR_WIDTH, barHeight);
 
+        ctx.fillStyle = '#000';
         ctx.fillText(arrayNames[i], newX, startY + MARGIN);
         ctx.fillText(arrayTimes[i].toFixed(0), newX, newY - GAP);
       }
@@ -61,8 +50,8 @@ window.renderStatistics = function(ctx, names, times) {
   // Вспомогательные функции
   // Ищем наихудший результат
   function getMaxValue(array) {
-    var max = -1;
-    for (var i = 0; i < array.length; i++) {
+    var max = 0;
+    for (var i = 1; i < array.length; i++) {
       var value = array[i];
       if (value > max) {
         max = value;
