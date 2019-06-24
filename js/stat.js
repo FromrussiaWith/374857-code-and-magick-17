@@ -50,14 +50,15 @@ window.renderStatistics = function(ctx, names, times) {
   // Вспомогательные функции
   // Ищем наихудший результат
   function getMaxValue(array) {
-    var max = 0;
-    for (var i = 1; i < array.length; i++) {
-      var value = array[i];
-      if (value > max) {
-        max = value;
+    var maxElement = array[0];
+
+    for (var i = 0; i < array.length; i++) {
+      if (array[i] > maxElement) {
+        maxElement = array[i];
       }
     }
-    return max;
+
+    return maxElement;
   }
 
   // Вычисляем цвет в зависимости от имени игрока
